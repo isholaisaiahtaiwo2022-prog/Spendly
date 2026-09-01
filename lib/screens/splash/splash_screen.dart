@@ -31,14 +31,8 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeOut,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOutBack,
-      ),
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
     );
 
     _animationController.forward();
@@ -57,9 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
       body: Stack(
         children: [
           // Background decorations
-          const Positioned.fill(
-            child: _SplashBackground(),
-          ),
+          const Positioned.fill(child: _SplashBackground()),
 
           // Main content
           SafeArea(
@@ -92,7 +84,6 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 }
-
 
 ///
 /// Splash content
@@ -166,7 +157,6 @@ class _SplashContent extends StatelessWidget {
   }
 }
 
-
 ///
 /// Background waves
 ///
@@ -218,7 +208,6 @@ class _SplashBackground extends StatelessWidget {
   }
 }
 
-
 class _WavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -257,7 +246,6 @@ class _WavePainter extends CustomPainter {
     return false;
   }
 }
-
 
 ///
 /// Bottom page indicators

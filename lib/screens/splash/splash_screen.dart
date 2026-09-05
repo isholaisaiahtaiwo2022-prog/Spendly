@@ -37,10 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController.forward();
 
-    Future.delayed(
-      const Duration(milliseconds: 2800),
-      _navigateToOnboarding,
-    )
+    Future.delayed(const Duration(milliseconds: 2800), _navigateToOnboarding);
   }
 
   @override

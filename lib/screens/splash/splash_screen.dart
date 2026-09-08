@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:spendly/core/theme/app-theme.dart';
+import 'package:spendly/screens/onboarding/onboarding_screen.dart';
 
 // import '../../core/theme/app_theme.dart';
 
@@ -38,6 +41,26 @@ class _SplashScreenState extends State<SplashScreen>
     _animationController.forward();
 
     Future.delayed(const Duration(milliseconds: 2800), _navigateToOnboarding);
+  }
+
+  void _navigateToOnboarding() {
+    if (!mounted) return;
+
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return const OnboardingScreen();
+        },
+
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+
+        transitionDuration: const Duration(
+          milliseconds: 500,
+        )
+      ),
+    );
   }
 
   @override

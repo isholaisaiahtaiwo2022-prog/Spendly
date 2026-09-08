@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spendly/core/theme/App-Theme.dart';
 import 'package:spendly/screens/splash/splash_screen.dart';
+import 'package:spendly/screens/setup/name_setup_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -26,6 +27,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       setState(() {
         _isPressed = false;
       });
+
+      Navigator.of(context).push(
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return const NameSetupScreen();
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      );
     });
   }
 
@@ -130,7 +144,7 @@ class _onboardingIllustration extends StatelessWidget {
           children: [
             _circle(
               size: 170,
-              color: AppTheme.primaryGreen.withValues(alpha: 0.05),
+              color: AppTheme.primaryGreen.withValues(alpha: 0.10),
             ),
 
             _circle(
@@ -141,7 +155,7 @@ class _onboardingIllustration extends StatelessWidget {
             //Decorative finance icons
             const Positioned(
               top: 32,
-              left: 42,
+              left: 22,
               child: _FloatingIcon(
                 icon: Icons.bar_chart_rounded,
                 color: Color(0xFF159447),
@@ -150,7 +164,7 @@ class _onboardingIllustration extends StatelessWidget {
 
             const Positioned(
               top: 18,
-              left: 48,
+              left: 58,
               child: _FloatingIcon(
                 icon: Icons.monetization_on_rounded,
                 color: Color(0xFFE6B93C),
@@ -193,31 +207,36 @@ class _onboardingIllustration extends StatelessWidget {
                   ),
                 ],
               ),
+
+              child: Icon(
+                Icons.account_balance_wallet_rounded,
+                color: Colors.white,
+                size: 70,
+              ),
             ),
 
             Stack(
               children: [
                 Positioned(
-                  right: -12,
-                  bottom: -10,
+                  right: 12,
+                  bottom: 10,
                   child: Container(
-                    width: 75,
-                    height: 75,
+                    width: 50,
+                    height: 50,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
+                      color: AppTheme.darkScreen.withValues(alpha: 0.08),
                       shape: BoxShape.circle,
                     ),
                   ),
                 ),
 
-                const Center(
-                  child: Icon(
-                    Icons.account_balance_wallet_rounded,
-                    color: Colors.white,
-                    size: 70,
-                  ),
-                ),
-
+                // const Center(
+                //   child: Icon(
+                //     Icons.account_balance_wallet_rounded,
+                //     color: Colors.white,
+                //     size: 70,
+                //   ),
+                // ),
                 Positioned(
                   right: 12,
                   top: 12,
@@ -225,7 +244,12 @@ class _onboardingIllustration extends StatelessWidget {
                     width: 35,
                     height: 25,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: const Color.fromARGB(
+                        255,
+                        173,
+                        22,
+                        22,
+                      ).withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(7),
                     ),
                   ),

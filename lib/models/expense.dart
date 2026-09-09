@@ -9,8 +9,7 @@ class Expense {
   final TransactionType type;
   final String? paymentMethod;
 
-
-  const Expense ({
+  const Expense({
     required this.id,
     required this.title,
     required this.amount,
@@ -18,5 +17,5 @@ class Expense {
     required this.date,
     this.type = TransactionType.expense,
     this.paymentMethod,
-  })
+  });
 }

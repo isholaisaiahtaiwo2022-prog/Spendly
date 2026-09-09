@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spendly/core/theme/app-theme.dart';
+import 'package:spendly/screens/home/home_screen.dart';
 
 class MonthlyLimitSetupScreen extends StatefulWidget {
   final String name;
@@ -45,6 +46,18 @@ class _MonthlyLimitSetupScreenState extends State<MonthlyLimitSetupScreen> {
       );
       return;
     }
+
+
+    // Navigate to HomeScreen passing name and monthly limit
+  Navigator.of(context).pushAndRemoveUntil(
+    MaterialPageRoute(
+      builder: (context) => HomeScreen(
+        name: widget.name,
+        monthlyLimit: amount,
+      ),
+    ),
+    (route) => false,
+  );
 
 
   }

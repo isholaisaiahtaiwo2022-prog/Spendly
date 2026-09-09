@@ -14,8 +14,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool _isPressed = false;
 
   void _getStarted() {
-    // Name setup will be connected in the next milestone.
-    // For now, this button provides visual feedback.
 
     setState(() {
       _isPressed = true;

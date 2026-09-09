@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spendly/core/theme/app-theme.dart';
+import 'package:spendly/screens/setup/monthly_limit_setup_screen.dart';
 
 class NameSetupScreen extends StatefulWidget {
   const NameSetupScreen({super.key});
@@ -23,9 +24,12 @@ class _NameSetupScreenState extends State<NameSetupScreen> {
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.redAccent,
+      SnackBar(content: Text(message), 
+      backgroundColor: Colors.redAccent,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20)
+      ),
       ),
     );
   }
@@ -34,7 +38,7 @@ class _NameSetupScreenState extends State<NameSetupScreen> {
     // Standardize spacing (collapses multiple inner spaces into one)
     final name = _nameController.text.trim().replaceAll(RegExp(r'\s+'), ' ');
 
-    if (name.isEmpty) {
+    if (name.isEmpty){
       _showError('Please enter your name');
       return;
     }
@@ -57,8 +61,18 @@ class _NameSetupScreenState extends State<NameSetupScreen> {
     // Update the controller text with cleaned spacing
     _nameController.text = name;
 
-    // Proceed with valid name
-    // e.g., Navigator.push(...) or save to state management
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return MonthlyLimitSetupScreen(name: name);
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+
+        transitionDuration: const Duration(milliseconds: 400)
+      ),
+    );
   }
 
   @override
@@ -115,7 +129,9 @@ class _NameSetupScreenState extends State<NameSetupScreen> {
                 textInputAction: TextInputAction.done,
                 inputFormatters: [
                   // Prevents the user from typing numbers or non-name symbols
-                  FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s\-\'\u00C0-\u024F]")),
+                  FilteringTextInputFormatter.allow(
+                    RegExp(r"[a-zA-Z\s\-\'\u00C0-\u024F]"),
+                  ),
                   LengthLimitingTextInputFormatter(50),
                 ],
                 onSubmitted: (_) => _continue(),
@@ -140,10 +156,7 @@ class _NameSetupScreenState extends State<NameSetupScreen> {
                   ),
                   child: const Text(
                     'Continue',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),

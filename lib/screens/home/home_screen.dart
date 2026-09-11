@@ -53,7 +53,37 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
-              
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
+
+                    children: [
+                      const Text(
+                        'Good Evening 👋',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
+                          
+                        ),
+                      ),
+
+                      Text(
+                        widget.name,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  ),
+
+
+                  
+                ],
+              )
             ],
           ),
         )

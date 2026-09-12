@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spendly/core/theme/app-theme.dart';
 import 'package:spendly/models/expense.dart';
-import 'package:spendly/screens/expense/add_expense_screen.dart';
+import 'package:spendly/screens/transactions/add_expense_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String name;
-  final double monthlyLimit;
 
-  const HomeScreen({super.key, required this.name, required this.monthlyLimit});
+
+  const HomeScreen({super.key,});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();

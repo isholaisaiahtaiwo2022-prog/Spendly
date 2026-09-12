@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spendly/models/expense.dart';
-import 'package:spendly/screens/expense/add_expense_screen.dart';
+import 'package:spendly/screens/transactions/add_expense_screen.dart';
 import 'package:spendly/screens/setup/monthly_limit_setup_screen.dart';
 
 class Expenseprovider extends ChangeNotifier {
@@ -23,7 +23,7 @@ class Expenseprovider extends ChangeNotifier {
   double get remaining => _monthlyLimit - totalSpent;
   int get expenseCount => _expenses.length;
 
-  // Sewt user setup details (From onboarding/setup flow)
+  // Set user setup details (From onboarding)
 
   void setUserSetup(String name, double limit) {
     _name = name;

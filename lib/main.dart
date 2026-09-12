@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:spendly/providers/expense-provider.dart';
 import 'package:spendly/screens/splash/splash_screen.dart';
 import 'core/theme/app-theme.dart';
 
 void main() {
-  runApp(const SplendyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => Expenseprovider(),
+    child: const SplendyApp(),));
 }
 
 class SplendyApp extends StatelessWidget {

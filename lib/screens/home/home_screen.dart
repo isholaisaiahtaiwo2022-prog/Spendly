@@ -4,43 +4,16 @@ import 'package:spendly/core/theme/app-theme.dart';
 import 'package:spendly/models/expense.dart';
 import 'package:spendly/screens/transactions/add_expense_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-
-
-  const HomeScreen({super.key,});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final List<Expense> _expenses = [];
-
-  double get _totalSpent {
-    return _expenses
-        .where((e) => e.type == TransactionType.expense)
-        .fold(0.0, (sum, item) => sum + item.amount);
-  }
-
-  double get _remaining => widget.monthlyLimit - _totalSpent;
-
-  Future<void> _navigateToAddExpense() async {
-    final result = await Navigator.of(context).push<Expense>(
-      MaterialPageRoute(builder: (context) => const AddExpenseScreen()),
-    );
-
-    if (result != null) {
-      setState(() {
-        _expenses.insert(0, result);
-      });
-    }
-  }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final progress = widget.monthlyLimit > 0
-        ? (_totalSpent / widget.monthlyLimit).clamp(0.0, 1.0)
+    final provider = context.watch();
+    final progress = provider.monthlyLimit > 0
+        ? (provider.totalSpent / provider.monthlyLimit).clamp(0.0, 1.0)
         : 0.0;
+
     return Scaffold(
       backgroundColor: AppTheme.lightBackground,
       body: SafeArea(
@@ -64,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       Text(
-                        widget.name,
+                        provider.name.isEmpty ? 'User' : provider.name,
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -104,11 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 8),
 
                     Text(
-                      '₦${_remaining.toStringAsFixed(0)}',
+                      '₦${provider.remaining.toStringAsFixed(0)}',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: _remaining < 0 ? Colors.redAccent : Colors.white,
+                        color: provider.remaining < 0
+                            ? Colors.redAccent
+                            : Colors.white,
                       ),
                     ),
 
@@ -129,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       children: [
                         Text(
-                          'Spent ₦${_totalSpent.toStringAsFixed(0)}',
+                          'Spent ₦${provider.totalSpent.toStringAsFixed(0)}',
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 12,
@@ -137,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
 
                         Text(
-                          'Limit ₦${widget.monthlyLimit.toStringAsFixed(0)}',
+                          'Limit ₦${provider.monthlyLimit.toStringAsFixed(0)}',
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 12,
@@ -173,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 16),
 
-              if (_expenses.isEmpty) ...[
+              if (provider.expenses.isEmpty) ...[
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
@@ -218,9 +193,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _expenses.length,
+                  itemCount: provider.expenses.length,
                   itemBuilder: (context, index) {
-                    final item = _expenses[index];
+                    final item = provider.expenses[index];
                     return Card(
                       elevation: 0,
                       margin: const EdgeInsets.only(bottom: 10),
@@ -231,16 +206,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: ListTile(
                         title: Text(
                           item.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
 
                         subtitle: Text(
                           item.category,
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Colors.grey
+                            color: Colors.grey,
                           ),
                         ),
 
@@ -249,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.redAccent,
-                            fontSize: 15
+                            fontSize: 15,
                           ),
                         ),
                       ),
@@ -258,33 +231,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
 
-
-              const SizedBox(
-                height: 24,
-              ),
+              const SizedBox(height: 24),
 
               SizedBox(
                 width: double.infinity,
                 height: 54,
                 child: ElevatedButton.icon(
-                  onPressed: _navigateToAddExpense, 
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddExpenseScreen(),
+                      ),
+                    );
+                  },
                   icon: const Icon(Icons.add),
                   label: const Text(
                     'Add Expanse',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     elevation: 10,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)
-                    )
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/core/theme/App-Theme.dart';
 import 'package:spendly/models/expense.dart';
-// import 'package:spendly/screens//add_expense_screen.dart';
+import 'package:spendly/providers/expense-provider.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
@@ -67,7 +67,7 @@ class _AddAxpenseScreenState extends State<AddExpenseScreen> {
       paymentMethod: _selectedPaymentMethod,
     );
 
-    context.read().addExpnses(newExpense);
+    context.read<Expenseprovider>().addExpense(newExpense);
 
     Navigator.of(context).pop();
   }
@@ -79,6 +79,11 @@ class _AddAxpenseScreenState extends State<AddExpenseScreen> {
       appBar: AppBar(
         backgroundColor: AppTheme.lightBackground,
         elevation: 0,
+        leading: IconButton(
+          
+          onPressed: () => Navigator.of(context).pop(), 
+          icon: const Icon(Icons.arrow_back_ios_new_outlined,
+          color: Colors.black87,)),
       ),
     ) ;
   }

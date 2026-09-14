@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:spendly/models/expense.dart';
-import 'package:spendly/screens/transactions/add_expense_screen.dart';
-import 'package:spendly/screens/setup/monthly_limit_setup_screen.dart';
 
 class Expenseprovider extends ChangeNotifier {
   String _name = '';

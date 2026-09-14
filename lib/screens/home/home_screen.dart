@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/core/theme/app-theme.dart';
-import 'package:spendly/models/expense.dart';
+import 'package:spendly/providers/expense-provider.dart';
 import 'package:spendly/screens/transactions/add_expense_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch();
+    final provider = context.watch<Expenseprovider>();
     final progress = provider.monthlyLimit > 0
         ? (provider.totalSpent / provider.monthlyLimit).clamp(0.0, 1.0)
         : 0.0;
@@ -201,7 +201,7 @@ class HomeScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 10),
 
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(16),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       child: ListTile(
                         title: Text(

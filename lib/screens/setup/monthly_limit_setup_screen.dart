@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/core/theme/app-theme.dart';
+import 'package:spendly/providers/expense-provider.dart';
 import 'package:spendly/screens/home/home_screen.dart';
-
 
 class MonthlyLimitSetupScreen extends StatefulWidget {
   final String name;
@@ -24,9 +24,12 @@ class _MonthlyLimitSetupScreenState extends State<MonthlyLimitSetupScreen> {
   }
 
   void _continue() {
+    debugPrint('continue button has been pressed');
     final amountText = _amountController.text.trim();
+    debugPrint('Input text: "$amountText"');
 
     if (amountText.isEmpty) {
+      debugPrint('Failed: Amount text  is Empty');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please Enter your Monthly Spending Limit'),
@@ -51,7 +54,7 @@ class _MonthlyLimitSetupScreenState extends State<MonthlyLimitSetupScreen> {
       return;
     }
 
-    context.read().setUserSetup(widget.name, amount);
+    context.read<Expenseprovider>().setUserSetup(widget.name, amount);
 
     // Navigate to HomeScreen passing name and monthly limit
     Navigator.of(context).pushAndRemoveUntil(

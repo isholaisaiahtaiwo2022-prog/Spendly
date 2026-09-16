@@ -262,6 +262,8 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+
+      drawer: Drawer(),
     );
   }
 }

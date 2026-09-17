@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spendly/models/expense.dart';
 
 class Expenseprovider extends ChangeNotifier {
   String _name = '';
   double _monthlyLimit = 0.0;
-  final List _expenses = [];
+  List<Expense> _expenses = [];
+  bool _isLoading = true;
+
+  // Keys for SharedPreferences
+  static const String _keyName = 'user_name';
+  static const String _keyLimit = 'monthly_limit';
+  static const String _keyExpenses = 'user_expenses';
 
   //Getters to read user setup
   String get name => _name;
   double get monthlyLimit => _monthlyLimit;
-  List get expenses => List.unmodifiable(_expenses);
+  List<Expense> get expenses => List.unmodifiable(_expenses);
+  bool get isLoading => _isLoading;
+  bool get isSetupComplete => _name.isNotEmpty && _monthlyLimit > 0;
 
   //Derived Business Logic
   double get totalSpent {
@@ -21,16 +30,50 @@ class Expenseprovider extends ChangeNotifier {
   double get remaining => _monthlyLimit - totalSpent;
   int get expenseCount => _expenses.length;
 
-  // Set user setup details (From onboarding)
+  Future<void> loadSavedData() async {
+    _isLoading = true;
+    notifyListeners();
 
-  void setUserSetup(String name, double limit) {
-    _name = name;
-    _monthlyLimit = limit;
+    final prefs = await SharedPreferences.getInstance();
+    _name = prefs.getString(_keyName) ?? '';
+    _monthlyLimit = prefs.getDouble(_keyLimit) ?? 0.0;
+
+    final String? expensesJsonString = prefs.getString(_keyExpenses);
+    if (expensesJsonString != null && expensesJsonString.isNotEmpty) {
+      final List<dynamic> decodedList = jsonDecode(expensesJsonString);
+      _expenses = decodedList.map((item) => Expense.fromMap(item)).toString();
+    } else {
+      _expenses = [];
+    }
+
+    _isLoading = false;
     notifyListeners();
   }
 
-  void addExpense(Expense expense) {
+  // Save Onboarding / Limit Setup
+
+  void setUserSetup(String name, double limit) async {
+    _name = name;
+    _monthlyLimit = limit;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyName, name);
+    await prefs.setDouble(_keyLimit, limit);
+    await prefs.setBool(_keyIsSetpDone, true);
+  }
+
+  // Add Transaction and sync to storage
+  Future<void> addExpense(Expense expense) async {
     _expenses.insert(0, expense);
     notifyListeners();
+    await _saveExpensesToDisk();
+  }
+
+  // private helper to serialize expense list to storage
+  Future<void> _saveExpensesToDisk() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List <Map<String, dynamic>> mapList = 
+    _expenses.map((e))
   }
 }

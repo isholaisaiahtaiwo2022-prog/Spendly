@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spendly/models/expense.dart';
@@ -12,6 +14,7 @@ class Expenseprovider extends ChangeNotifier {
   static const String _keyName = 'user_name';
   static const String _keyLimit = 'monthly_limit';
   static const String _keyExpenses = 'user_expenses';
+  static const String _keyIsSetupDone = 'user_setup_done';
 
   //Getters to read user setup
   String get name => _name;
@@ -41,7 +44,9 @@ class Expenseprovider extends ChangeNotifier {
     final String? expensesJsonString = prefs.getString(_keyExpenses);
     if (expensesJsonString != null && expensesJsonString.isNotEmpty) {
       final List<dynamic> decodedList = jsonDecode(expensesJsonString);
-      _expenses = decodedList.map((item) => Expense.fromMap(item)).toString();
+        _expenses = decodedList
+          .map((item) => Expense.fromMap(item as Map<String, dynamic>))
+          .toList();
     } else {
       _expenses = [];
     }
@@ -60,7 +65,7 @@ class Expenseprovider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyName, name);
     await prefs.setDouble(_keyLimit, limit);
-    await prefs.setBool(_keyIsSetpDone, true);
+    await prefs.setBool(_keyIsSetupDone, true);
   }
 
   // Add Transaction and sync to storage
@@ -73,7 +78,11 @@ class Expenseprovider extends ChangeNotifier {
   // private helper to serialize expense list to storage
   Future<void> _saveExpensesToDisk() async {
     final prefs = await SharedPreferences.getInstance();
-    final List <Map<String, dynamic>> mapList = 
-    _expenses.map((e))
+    final List<Map<String, dynamic>> mapList = _expenses
+      .map<Map<String, dynamic>>((e) => Map<String, dynamic>.from(e.toMap()))
+        .toList();
+
+    final String jsonString = jsonEncode(mapList);
+    await prefs.setString(_keyExpenses, jsonString);
   }
 }

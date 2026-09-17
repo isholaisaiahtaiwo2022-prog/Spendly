@@ -1,10 +1,11 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spendly/core/theme/app-theme.dart';
+import 'package:spendly/providers/expense-provider.dart';
+// import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/screens/home/home_screen.dart';
 import 'package:spendly/screens/onboarding/onboarding_screen.dart';
-
-// import '../../core/theme/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,7 +17,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
 
@@ -40,25 +40,32 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController.forward();
 
-    Future.delayed(const Duration(milliseconds: 2800), _navigateToOnboarding);
+    // Trigger async data load and smart navigation routing
+    _bootstrapAndNavigate();
   }
 
-  void _navigateToOnboarding() {
+  Future<void> _bootstrapAndNavigate() async {
+    // 1. Load saved local data into ExpenseProvider
+    final provider = context.read<Expenseprovider>();
+    await provider.loadSavedData();
+
+    // 2. Allow logo animation time to display (min 2.8 seconds)
+    await Future.delayed(const Duration(milliseconds: 2800));
+
     if (!mounted) return;
+
+    // 3. Smart Routing Decision based on saved onboarding completion status
+    final Widget targetScreen = provider.isSetupComplete
+        ? const HomeScreen()
+        : const OnboardingScreen();
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return const OnboardingScreen();
-        },
-
+        pageBuilder: (context, animation, secondaryAnimation) => targetScreen,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
-
-        transitionDuration: const Duration(
-          milliseconds: 500,
-        )
+        transitionDuration: const Duration(milliseconds: 500),
       ),
     );
   }

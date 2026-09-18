@@ -44,7 +44,7 @@ class Expenseprovider extends ChangeNotifier {
     final String? expensesJsonString = prefs.getString(_keyExpenses);
     if (expensesJsonString != null && expensesJsonString.isNotEmpty) {
       final List<dynamic> decodedList = jsonDecode(expensesJsonString);
-        _expenses = decodedList
+      _expenses = decodedList
           .map((item) => Expense.fromMap(item as Map<String, dynamic>))
           .toList();
     } else {
@@ -79,10 +79,17 @@ class Expenseprovider extends ChangeNotifier {
   Future<void> _saveExpensesToDisk() async {
     final prefs = await SharedPreferences.getInstance();
     final List<Map<String, dynamic>> mapList = _expenses
-      .map<Map<String, dynamic>>((e) => Map<String, dynamic>.from(e.toMap()))
+        .map<Map<String, dynamic>>((e) => Map<String, dynamic>.from(e.toMap()))
         .toList();
 
     final String jsonString = jsonEncode(mapList);
     await prefs.setString(_keyExpenses, jsonString);
+  }
+
+  Future<void> deleteExpense(String id) async {
+    _expenses.removeWhere((item) => item.id == id);
+
+    notifyListeners();
+    await _saveExpensesToDisk();
   }
 }

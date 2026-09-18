@@ -196,33 +196,64 @@ class HomeScreen extends StatelessWidget {
                   itemCount: provider.expenses.length,
                   itemBuilder: (context, index) {
                     final item = provider.expenses[index];
-                    return Card(
-                      elevation: 0,
-                      margin: const EdgeInsets.only(bottom: 10),
+                    return Dismissible(
+                      key: Key(item.id),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
 
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        child: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.white,
+                          size: 24,
+                        ),
                       ),
-                      child: ListTile(
-                        title: Text(
-                          item.title,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
 
-                        subtitle: Text(
-                          item.category,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
+                      onDismissed: (direction) {
+                        context.read<Expenseprovider>().deleteExpense(item.id);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            content: Text('${item.title} deleted'),
+
+                            duration: const Duration(seconds: 2),
                           ),
-                        ),
+                        );
+                      },
+                      child: Card(
+                        elevation: 0,
+                        margin: const EdgeInsets.only(bottom: 10),
 
-                        trailing: Text(
-                          '-₦${item.amount.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent,
-                            fontSize: 15,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            item.title,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+
+                          subtitle: Text(
+                            item.category,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+
+                          trailing: Text(
+                            '-₦${item.amount.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.redAccent,
+                              fontSize: 15,
+                            ),
                           ),
                         ),
                       ),
